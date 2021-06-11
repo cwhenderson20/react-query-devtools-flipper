@@ -1,39 +1,63 @@
 import { parse } from "flatted";
 import {
-  createState, Layout, PluginClient,
-  usePlugin, useValue
+  createState,
+  Layout,
+  PluginClient,
+  usePlugin,
+  useValue,
 } from "flipper-plugin";
-import React from "react";
+import React, { useMemo, useState } from "react";
+import type { Query } from "react-query";
 import QueryTable from "./components/QueryTable";
-
-type Query = any;
-type Queries = Query[];
+import Sidebar from "./components/Sidebar";
 
 type Events = {
   queries: { queries: string };
 };
 
-// Read more: https://fbflipper.com/docs/tutorial/js-custom#creating-a-first-plugin
-// API: https://fbflipper.com/docs/extending/flipper-plugin#pluginclient
 export function plugin(client: PluginClient<Events, {}>) {
-  const data = createState<Queries>([], { persist: "queries" });
-
-  client.onMessage("queries", (queries) => {
-    data.set(parse(queries.queries));
+  const queries = createState<Query[]>([], { persist: "queries" });
+  const selectedQueryHash = createState<string | null>(null, {
+    persist: "selectedQueryHash",
   });
 
-  return { data };
+  client.onMessage("queries", (data) => {
+    queries.set(parse(data.queries));
+  });
+
+  function setSelectedQueryHash(queryHash: string) {
+    console.log('setting selectedQueryHash', queryHash);
+    selectedQueryHash.set(queryHash);
+  }
+
+  return {
+    queries,
+    selectedQueryHash,
+    setSelectedQueryHash,
+  };
 }
 
 // Read more: https://fbflipper.com/docs/tutorial/js-custom#building-a-user-interface-for-the-plugin
 // API: https://fbflipper.com/docs/extending/flipper-plugin#react-hooks
 export function Component() {
   const instance = usePlugin(plugin);
-  const data = useValue(instance.data);
+  const queries = useValue(instance.queries);
+  const selectedQueryHash = useValue(instance.selectedQueryHash);
+  const selectedQuery = useMemo(
+    () => queries.find((query) => {
+      console.log('query has', query.queryHash);
+      return query.queryHash === selectedQueryHash
+    }),
+    [selectedQueryHash, queries]
+  );
 
   return (
-    <Layout.ScrollContainer>
-      <QueryTable queries={data} />
-    </Layout.ScrollContainer>
+    <Layout.Horizontal grow gap pad>
+      <QueryTable
+        queries={queries}
+        onSelectRow={instance.setSelectedQueryHash}
+      />
+      {selectedQuery && <Sidebar query={selectedQuery} />}
+    </Layout.Horizontal>
   );
 }
