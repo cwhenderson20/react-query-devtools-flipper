@@ -1,19 +1,41 @@
 import React from "react";
-import { Query } from "react-query";
-import { Layout, Panel, DetailSidebar, ManagedDataInspector } from "flipper";
+import type { Query, QueryKey } from "react-query";
+import { Panel, DetailSidebar, ManagedDataInspector, Toolbar } from "flipper";
+import { Button } from "antd";
 
 type Props = {
   query: Query;
+  onRefetchQuery: (queryKey: QueryKey) => void;
 };
 
-export default function Sidebar({ query }: Props) {
+export default function Sidebar({ query, onRefetchQuery }: Props) {
+  console.log({ onRefetchQuery });
   return (
-    <DetailSidebar>
+    <DetailSidebar minWidth={300} width={350}>
       <Panel floating={false} heading="Query Details">
         <ManagedDataInspector
           data={{ "Query Key": query.queryKey }}
           expandRoot={true}
         />
+      </Panel>
+      <Panel floating={false} heading="Actions">
+        <Toolbar>
+          <Button
+            size="small"
+            type="primary"
+            disabled={query.state.isFetching}
+            onClick={() => {
+              onRefetchQuery(query.queryKey);
+            }}
+          >
+            Refetch
+          </Button>
+          <Button size="small">Invalidate</Button>
+          <Button size="small">Reset</Button>
+          <Button size="small" danger={true}>
+            Remove
+          </Button>
+        </Toolbar>
       </Panel>
       <Panel floating={false} heading="Data Explorer">
         <ManagedDataInspector

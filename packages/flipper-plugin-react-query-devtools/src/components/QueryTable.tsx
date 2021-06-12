@@ -4,7 +4,7 @@ import type { Query } from "react-query";
 
 type Props = {
   queries: Query[];
-  onSelectRow: (queryHash: string) => void;
+  onSelectRow: (queryHash: string | null) => void;
 };
 
 export default function QueryTable({ queries, onSelectRow }: Props) {
