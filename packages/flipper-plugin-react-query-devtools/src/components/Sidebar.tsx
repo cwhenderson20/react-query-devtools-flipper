@@ -6,10 +6,18 @@ import { Button } from "antd";
 type Props = {
   query: Query;
   onRefetchQuery: (queryKey: QueryKey) => void;
+  onInvalidateQuery: (queryKey: QueryKey) => void;
+  onResetQuery: (queryKey: QueryKey) => void;
+  onRemoveQuery: (queryKey: QueryKey) => void;
 };
 
-export default function Sidebar({ query, onRefetchQuery }: Props) {
-  console.log({ onRefetchQuery });
+export default function Sidebar({
+  query,
+  onRefetchQuery,
+  onInvalidateQuery,
+  onResetQuery,
+  onRemoveQuery,
+}: Props) {
   return (
     <DetailSidebar minWidth={300} width={350}>
       <Panel floating={false} heading="Query Details">
@@ -30,9 +38,29 @@ export default function Sidebar({ query, onRefetchQuery }: Props) {
           >
             Refetch
           </Button>
-          <Button size="small">Invalidate</Button>
-          <Button size="small">Reset</Button>
-          <Button size="small" danger={true}>
+          <Button
+            size="small"
+            onClick={() => {
+              onInvalidateQuery(query.queryKey);
+            }}
+          >
+            Invalidate
+          </Button>
+          <Button
+            size="small"
+            onClick={() => {
+              onResetQuery(query.queryKey);
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            size="small"
+            danger={true}
+            onClick={() => {
+              onRemoveQuery(query.queryKey);
+            }}
+          >
             Remove
           </Button>
         </Toolbar>

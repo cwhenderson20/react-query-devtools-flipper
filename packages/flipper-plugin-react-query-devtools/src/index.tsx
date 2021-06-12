@@ -17,6 +17,9 @@ type Events = {
 
 type Methods = {
   refetchQuery(queryKey: QueryKey): Promise<void>;
+  invalidateQuery(queryKey: QueryKey): Promise<void>;
+  resetQuery(queryKey: QueryKey): Promise<void>;
+  removeQuery(queryKey: QueryKey): Promise<void>;
 };
 
 export function plugin(client: PluginClient<Events, Methods>) {
@@ -41,11 +44,38 @@ export function plugin(client: PluginClient<Events, Methods>) {
     }
   }
 
+  async function invalidateQuery(queryKey: QueryKey) {
+    try {
+      await client.send("invalidateQuery", queryKey);
+    } catch (error) {
+      console.error("Invalidate query failed", error);
+    }
+  }
+
+  async function resetQuery(queryKey: QueryKey) {
+    try {
+      await client.send("resetQuery", queryKey);
+    } catch (error) {
+      console.error("Reset query failed", error);
+    }
+  }
+
+  async function removeQuery(queryKey: QueryKey) {
+    try {
+      await client.send("removeQuery", queryKey)
+    } catch (error) {
+      console.error("Remove query failed", error)
+    }
+  }
+
   return {
     queries,
     selectedQueryHash,
     setSelectedQueryHash,
     refetchQuery,
+    invalidateQuery,
+    resetQuery,
+    removeQuery,
   };
 }
 
@@ -68,7 +98,13 @@ export function Component() {
         onSelectRow={instance.setSelectedQueryHash}
       />
       {selectedQuery && (
-        <Sidebar query={selectedQuery} onRefetchQuery={instance.refetchQuery} />
+        <Sidebar
+          query={selectedQuery}
+          onRefetchQuery={instance.refetchQuery}
+          onInvalidateQuery={instance.invalidateQuery}
+          onResetQuery={instance.resetQuery}
+          onRemoveQuery={instance.removeQuery}
+        />
       )}
     </Layout.Horizontal>
   );
