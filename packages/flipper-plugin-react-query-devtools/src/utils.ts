@@ -38,3 +38,9 @@ function getIsStale(query: Query) {
 function getObserversCount(query: Query) {
   return query.observers?.length ?? 0;
 }
+
+export function getLastUpdatedAtString(query: Query) {
+  return query.state.dataUpdatedAt
+    ? new Date(query.state.dataUpdatedAt).toLocaleTimeString()
+    : "–";
+}

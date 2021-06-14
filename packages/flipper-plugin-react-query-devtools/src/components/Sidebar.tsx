@@ -2,7 +2,11 @@ import React from "react";
 import type { Query, QueryKey } from "react-query";
 import { Panel, DetailSidebar, ManagedDataInspector, Layout } from "flipper";
 import { Button, Tag, Typography } from "antd";
-import { getQueryStatusColor, getQueryStatusLabel } from "../utils";
+import {
+  getLastUpdatedAtString,
+  getQueryStatusColor,
+  getQueryStatusLabel,
+} from "../utils";
 
 type Props = {
   query: Query;
@@ -59,7 +63,7 @@ export default function Sidebar({
           <Layout.Horizontal style={{ justifyContent: "space-between" }}>
             <Typography.Text>Last Updated:</Typography.Text>
             <Typography.Text code>
-              {new Date(query.state.dataUpdatedAt).toLocaleTimeString()}
+              {getLastUpdatedAtString(query)}
             </Typography.Text>
           </Layout.Horizontal>
         </Layout.Container>
