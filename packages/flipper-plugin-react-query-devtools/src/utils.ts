@@ -10,21 +10,21 @@ export function getQueryStatusLabel(query: Query) {
     : "fresh";
 }
 
-const theme = {
-  gray: "#3f4e60",
-  success: "#00ab52",
-  active: "#006bff",
-  warning: "#ffb200",
+export const queryStatusColors = {
+  inactive: "#3f4e60",
+  fresh: "#00ab52",
+  fetching: "#006bff",
+  stale: "#ffb200",
 };
 
 export function getQueryStatusColor(query: Query) {
   return query.state.isFetching
-    ? theme.active
+    ? queryStatusColors.fetching
     : getIsStale(query)
-    ? theme.warning
+    ? queryStatusColors.stale
     : !getObserversCount(query)
-    ? theme.gray
-    : theme.success;
+    ? queryStatusColors.inactive
+    : queryStatusColors.fresh
 }
 
 function getIsStale(query: Query) {

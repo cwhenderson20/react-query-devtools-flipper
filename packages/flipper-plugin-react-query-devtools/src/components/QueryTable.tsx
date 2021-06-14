@@ -1,12 +1,13 @@
-import React, { useMemo, useState } from "react";
+import { Tag } from "antd";
 import { Layout, SearchableTable, TableRowSortOrder, Text } from "flipper";
+import React, { useMemo, useRef, useState } from "react";
 import type { Query } from "react-query";
 import {
   getLastUpdatedAtString,
   getQueryStatusColor,
   getQueryStatusLabel,
+  queryStatusColors,
 } from "../utils";
-import { Tag } from "antd";
 
 type Props = {
   queries: Query[];
@@ -26,13 +27,14 @@ const COLUMNS = {
     value: "Status",
     sortable: true,
   },
-}
+};
 
-const COLUMN_SIZES = [
+const COLUMN_ORDER = [
   { key: "updatedAt", visible: true },
   { key: "queryHash", visible: true },
   { key: "status", visible: true },
 ];
+const COLUMN_SIZES = { updatedAt: 150 };
 export default function QueryTable({ queries, onSelectRow }: Props) {
   const [sortOrder, setSortOrder] = useState<TableRowSortOrder>();
 
@@ -68,13 +70,48 @@ export default function QueryTable({ queries, onSelectRow }: Props) {
     return sorted;
   }, [sortOrder, queries]);
 
+  const hasFresh = useMemo(
+    () =>
+      queries.filter((query) => getQueryStatusLabel(query) === "fresh").length,
+    [queries]
+  );
+  const hasFetching = useMemo(
+    () =>
+      queries.filter((query) => getQueryStatusLabel(query) === "fetching")
+        .length,
+    [queries]
+  );
+  const hasStale = useMemo(
+    () =>
+      queries.filter((query) => getQueryStatusLabel(query) === "stale").length,
+    [queries]
+  );
+  const hasInactive = useMemo(
+    () =>
+      queries.filter((query) => getQueryStatusLabel(query) === "inactive")
+        .length,
+    [queries]
+  );
+
   return (
     <Layout.Container grow>
       <SearchableTable
+        actions={
+          <Layout.Horizontal>
+            <Tag color={queryStatusColors.fresh}>fresh ({hasFresh})</Tag>
+            <Tag color={queryStatusColors.fetching}>
+              fetching ({hasFetching})
+            </Tag>
+            <Tag color={queryStatusColors.stale}>stale ({hasStale})</Tag>
+            <Tag color={queryStatusColors.inactive}>
+              inactive ({hasInactive})
+            </Tag>
+          </Layout.Horizontal>
+        }
         columns={COLUMNS}
         onSort={setSortOrder}
-        columnOrder={COLUMN_SIZES}
-        columnSizes={{ updatedAt: 150 }}
+        columnOrder={COLUMN_ORDER}
+        columnSizes={COLUMN_SIZES}
         allowRegexSearch={true}
         floating={false}
         grow={true}
