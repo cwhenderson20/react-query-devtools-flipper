@@ -1,13 +1,13 @@
-import { Button, Input, Space, Tag, Typography } from "antd";
-import { DetailSidebar, Layout, ManagedDataInspector, Panel } from "flipper";
-import get from "lodash.get";
-import React, { useEffect, useMemo, useState } from "react";
-import { useStore } from "../use-store";
+import { Button, Input, Space, Tag, Typography } from 'antd';
+import { DetailSidebar, Layout, ManagedDataInspector, Panel } from 'flipper';
+import get from 'lodash.get';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useStore } from '../use-store';
 import {
   getLastUpdatedAtString,
   getQueryStatusColor,
   getQueryStatusLabel,
-} from "../utils";
+} from '../utils';
 
 export default function Sidebar() {
   const {
@@ -17,7 +17,7 @@ export default function Sidebar() {
     resetQuery,
     removeQuery,
   } = useStore();
-  const [filterKey, setFilterKey] = useState("");
+  const [filterKey, setFilterKey] = useState('');
   const filteredData = useMemo(
     () => get(query?.state.data, filterKey, query?.state.data),
     [query?.state.data, filterKey]
@@ -25,7 +25,7 @@ export default function Sidebar() {
 
   // reset the data filter when the selected query changes
   useEffect(() => {
-    setFilterKey("");
+    setFilterKey('');
   }, [query?.queryHash]);
 
   if (!query) {
@@ -40,10 +40,10 @@ export default function Sidebar() {
         accessory={
           <div
             style={{
-              display: "flex",
+              display: 'flex',
               flex: 1,
-              alignItems: "center",
-              justifyContent: "flex-end",
+              alignItems: 'center',
+              justifyContent: 'flex-end',
             }}
           >
             <Tag color={getQueryStatusColor(query)} style={{ marginRight: 0 }}>
@@ -53,12 +53,12 @@ export default function Sidebar() {
         }
       >
         <Layout.Container gap="tiny">
-          <Layout.Horizontal gap style={{ justifyContent: "space-between" }}>
+          <Layout.Horizontal gap style={{ justifyContent: 'space-between' }}>
             <Typography.Text code>
               {JSON.stringify(query.queryKey, null, 2)}
             </Typography.Text>
           </Layout.Horizontal>
-          <Layout.Horizontal style={{ justifyContent: "space-between" }}>
+          <Layout.Horizontal style={{ justifyContent: 'space-between' }}>
             <Typography.Text>Observers:</Typography.Text>
             <Typography.Text code>
               {
@@ -69,7 +69,7 @@ export default function Sidebar() {
               }
             </Typography.Text>
           </Layout.Horizontal>
-          <Layout.Horizontal style={{ justifyContent: "space-between" }}>
+          <Layout.Horizontal style={{ justifyContent: 'space-between' }}>
             <Typography.Text>Last Updated:</Typography.Text>
             <Typography.Text code>
               {getLastUpdatedAtString(query)}
@@ -133,7 +133,7 @@ export default function Sidebar() {
 
           <ManagedDataInspector
             data={filteredData}
-            expandRoot={typeof filteredData === "object"}
+            expandRoot={typeof filteredData === 'object'}
             collapsed={true}
           />
         </Space>

@@ -1,15 +1,15 @@
-import { DownOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Divider, Dropdown, Menu, Tag } from "antd";
-import { Layout, SearchableTable } from "flipper";
-import React from "react";
-import { useStore } from "../use-store";
+import { DownOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Divider, Dropdown, Menu, Tag } from 'antd';
+import { Layout, SearchableTable } from 'flipper';
+import React from 'react';
+import { useStore } from '../use-store';
 import {
   queryStatusColors,
   queryTableColumns,
   useColumns,
   useQueryStatuses,
   useSortedQueries,
-} from "../utils";
+} from '../utils';
 
 export default function QueryTable() {
   const {
@@ -56,29 +56,29 @@ export default function QueryTable() {
   return (
     <Layout.Container grow gap>
       <Layout.ScrollContainer>
-      <SearchableTable
-        actions={
-          <Layout.Horizontal>
+        <SearchableTable
+          actions={
+            <Layout.Horizontal>
               <Dropdown overlay={menu} trigger={['click']}>
-              <Button size="small">
-                Columns <DownOutlined />
-              </Button>
-            </Dropdown>
-          </Layout.Horizontal>
-        }
-        columns={columns}
-        onSort={setSortOrder}
-        columnOrder={columnOrder}
-        columnSizes={columnSizes}
-        allowRegexSearch={true}
-        floating={false}
-        multiline={false}
-        horizontallyScrollable={true}
-        rows={sortedQueries.map(buildRow)}
-        multiHighlight={false}
-        onRowHighlighted={onRowHighlighted}
-        zebra={true}
-      />
+                <Button size="small">
+                  Columns <DownOutlined />
+                </Button>
+              </Dropdown>
+            </Layout.Horizontal>
+          }
+          columns={columns}
+          onSort={setSortOrder}
+          columnOrder={columnOrder}
+          columnSizes={columnSizes}
+          allowRegexSearch={true}
+          floating={false}
+          multiline={false}
+          horizontallyScrollable={true}
+          rows={sortedQueries.map(buildRow)}
+          multiHighlight={false}
+          onRowHighlighted={onRowHighlighted}
+          zebra={true}
+        />
       </Layout.ScrollContainer>
       <Divider style={{ margin: 0 }} />
       <Layout.Horizontal>

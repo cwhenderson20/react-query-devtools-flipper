@@ -1,7 +1,7 @@
-import { useLocalStorageState, usePlugin, useValue } from "flipper-plugin";
-import { useCallback, useMemo } from "react";
-import { plugin } from "./plugin";
-import { defaultVisibleColumns } from "./utils";
+import { useLocalStorageState, usePlugin, useValue } from 'flipper-plugin';
+import { useCallback, useMemo } from 'react';
+import { plugin } from './plugin';
+import { defaultVisibleColumns } from './utils';
 
 export function useStore() {
   const instance = usePlugin(plugin);
@@ -17,7 +17,7 @@ export function useStore() {
   );
   const [columnVisibility, setColumnVisibility] = useLocalStorageState<
     Record<string, boolean>
-  >("columnVisibility", defaultVisibleColumns);
+  >('columnVisibility', defaultVisibleColumns);
 
   const toggleColumnVisibility = useCallback(
     (id: string) => {

@@ -1,24 +1,24 @@
-import { Tag } from "antd";
-import { Text } from "flipper";
-import React, { useCallback, useMemo } from "react";
-import type { Query } from "react-query";
-import { useStore } from "./use-store";
+import { Tag } from 'antd';
+import { Text } from 'flipper';
+import React, { useCallback, useMemo } from 'react';
+import type { Query } from 'react-query';
+import { useStore } from './use-store';
 
 export function getQueryStatusLabel(query: Query) {
   return query.state.isFetching
-    ? "fetching"
+    ? 'fetching'
     : !getObserversCount(query)
-    ? "inactive"
+    ? 'inactive'
     : getIsStale(query)
-    ? "stale"
-    : "fresh";
+    ? 'stale'
+    : 'fresh';
 }
 
 export const queryStatusColors = {
-  inactive: "#3f4e60",
-  fresh: "#00ab52",
-  fetching: "#006bff",
-  stale: "#ffb200",
+  inactive: '#3f4e60',
+  fresh: '#00ab52',
+  fetching: '#006bff',
+  stale: '#ffb200',
 };
 
 export function getQueryStatusColor(query: Query) {
@@ -46,30 +46,30 @@ export function getObserversCount(query: Query) {
 export function getLastUpdatedAtString(query: Query) {
   return query.state.dataUpdatedAt
     ? new Date(query.state.dataUpdatedAt).toLocaleTimeString()
-    : "–";
+    : '–';
 }
 
 export function useQueryStatuses() {
   const { queries } = useStore();
   const hasFresh = useMemo(
     () =>
-      queries.filter((query) => getQueryStatusLabel(query) === "fresh").length,
+      queries.filter((query) => getQueryStatusLabel(query) === 'fresh').length,
     [queries]
   );
   const hasFetching = useMemo(
     () =>
-      queries.filter((query) => getQueryStatusLabel(query) === "fetching")
+      queries.filter((query) => getQueryStatusLabel(query) === 'fetching')
         .length,
     [queries]
   );
   const hasStale = useMemo(
     () =>
-      queries.filter((query) => getQueryStatusLabel(query) === "stale").length,
+      queries.filter((query) => getQueryStatusLabel(query) === 'stale').length,
     [queries]
   );
   const hasInactive = useMemo(
     () =>
-      queries.filter((query) => getQueryStatusLabel(query) === "inactive")
+      queries.filter((query) => getQueryStatusLabel(query) === 'inactive')
         .length,
     [queries]
   );
@@ -95,8 +95,8 @@ type QueryTableColumn = {
 
 export const queryTableColumns: Record<string, QueryTableColumn> = {
   lastUpdated: {
-    id: "lastUpdated",
-    title: "Last Updated",
+    id: 'lastUpdated',
+    title: 'Last Updated',
     sortable: true,
     compareFn: (a, b) => a.state.dataUpdatedAt - b.state.dataUpdatedAt,
     getValue: (query) => <Text>{getLastUpdatedAtString(query)}</Text>,
@@ -104,8 +104,8 @@ export const queryTableColumns: Record<string, QueryTableColumn> = {
     size: 150,
   },
   queryHash: {
-    id: "queryHash",
-    title: "Query Hash",
+    id: 'queryHash',
+    title: 'Query Hash',
     sortable: true,
     compareFn: (a, b) => a.queryHash.localeCompare(b.queryHash),
     getValue: (query) => <Text>{query.queryHash}</Text>,
@@ -113,16 +113,16 @@ export const queryTableColumns: Record<string, QueryTableColumn> = {
     size: 275,
   },
   observerCount: {
-    id: "observerCount",
-    title: "Observer Count",
+    id: 'observerCount',
+    title: 'Observer Count',
     sortable: true,
     compareFn: (a, b) => getObserversCount(a) - getObserversCount(b),
     getValue: (query) => <Text>{getObserversCount(query)}</Text>,
     size: 130,
   },
   status: {
-    id: "status",
-    title: "Status",
+    id: 'status',
+    title: 'Status',
     sortable: true,
     compareFn: (a, b) =>
       getQueryStatusLabel(a).localeCompare(getQueryStatusLabel(b)),
@@ -136,24 +136,24 @@ export const queryTableColumns: Record<string, QueryTableColumn> = {
     size: 130,
   },
   updateCount: {
-    id: "updateCount",
-    title: "Update Count",
+    id: 'updateCount',
+    title: 'Update Count',
     sortable: true,
     compareFn: (a, b) => a.state.dataUpdateCount - b.state.dataUpdateCount,
     getValue: (query) => <Text>{query.state.dataUpdateCount}</Text>,
     size: 100,
   },
   cacheTime: {
-    id: "cacheTime",
-    title: "Cache Time (ms)",
+    id: 'cacheTime',
+    title: 'Cache Time (ms)',
     sortable: true,
     compareFn: (a, b) => a.cacheTime - b.cacheTime,
     getValue: (query) => <Text>{query.cacheTime}</Text>,
     size: 130,
   },
   staleTime: {
-    id: "staleTime",
-    title: "Stale Time (ms)",
+    id: 'staleTime',
+    title: 'Stale Time (ms)',
     sortable: true,
     compareFn: (a, b) => a.options.staleTime - b.options.staleTime,
     getValue: (query) => <Text>{query.options.staleTime}</Text>,
@@ -185,7 +185,7 @@ export function useSortedQueries() {
 
     const sorted = [...queries].sort(compareFn);
 
-    if (sortOrder.direction === "down") {
+    if (sortOrder.direction === 'down') {
       sorted.reverse();
     }
 
