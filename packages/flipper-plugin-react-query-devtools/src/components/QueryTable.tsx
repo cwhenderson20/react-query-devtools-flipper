@@ -55,10 +55,11 @@ export default function QueryTable() {
 
   return (
     <Layout.Container grow gap>
+      <Layout.ScrollContainer>
       <SearchableTable
         actions={
           <Layout.Horizontal>
-            <Dropdown overlay={menu} trigger={["click"]}>
+              <Dropdown overlay={menu} trigger={['click']}>
               <Button size="small">
                 Columns <DownOutlined />
               </Button>
@@ -78,6 +79,7 @@ export default function QueryTable() {
         onRowHighlighted={onRowHighlighted}
         zebra={true}
       />
+      </Layout.ScrollContainer>
       <Divider style={{ margin: 0 }} />
       <Layout.Horizontal>
         <Tag color={queryStatusColors.fresh}>fresh ({hasFresh})</Tag>
