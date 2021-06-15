@@ -1,6 +1,7 @@
-import { Button, Tag, Typography } from "antd";
+import { Button, Input, Space, Tag, Typography } from "antd";
 import { DetailSidebar, Layout, ManagedDataInspector, Panel } from "flipper";
-import React from "react";
+import get from "lodash.get";
+import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../use-store";
 import {
   getLastUpdatedAtString,
@@ -16,13 +17,23 @@ export default function Sidebar() {
     resetQuery,
     removeQuery,
   } = useStore();
+  const [filterKey, setFilterKey] = useState("");
+  const filteredData = useMemo(
+    () => get(query?.state.data, filterKey, query?.state.data),
+    [query?.state.data, filterKey]
+  );
+
+  // reset the data filter when the selected query changes
+  useEffect(() => {
+    setFilterKey("");
+  }, [query?.queryHash]);
 
   if (!query) {
     return null;
   }
 
   return (
-    <DetailSidebar minWidth={300} width={350}>
+    <DetailSidebar width={350}>
       <Panel
         floating={false}
         heading="Query Details"
@@ -110,11 +121,22 @@ export default function Sidebar() {
         heading="Data Explorer"
         collapsed={!query.state.data}
       >
-        <ManagedDataInspector
-          data={query.state?.data}
-          expandRoot={true}
-          collapsed={true}
-        />
+        <Space size="small" direction="vertical">
+          <Input
+            placeholder="Filter key"
+            value={filterKey}
+            onChange={(e) => {
+              e.stopPropagation();
+              setFilterKey(e.target.value);
+            }}
+          />
+
+          <ManagedDataInspector
+            data={filteredData}
+            expandRoot={typeof filteredData === "object"}
+            collapsed={true}
+          />
+        </Space>
       </Panel>
       <Panel floating={false} heading="Query Explorer">
         <ManagedDataInspector data={query} expandRoot={true} collapsed={true} />
