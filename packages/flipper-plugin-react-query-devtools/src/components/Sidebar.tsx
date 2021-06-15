@@ -1,28 +1,26 @@
-import React from "react";
-import type { Query, QueryKey } from "react-query";
-import { Panel, DetailSidebar, ManagedDataInspector, Layout } from "flipper";
 import { Button, Tag, Typography } from "antd";
+import { DetailSidebar, Layout, ManagedDataInspector, Panel } from "flipper";
+import React from "react";
+import { useStore } from "../use-store";
 import {
   getLastUpdatedAtString,
   getQueryStatusColor,
   getQueryStatusLabel,
 } from "../utils";
 
-type Props = {
-  query: Query;
-  onRefetchQuery: (queryKey: QueryKey) => void;
-  onInvalidateQuery: (queryKey: QueryKey) => void;
-  onResetQuery: (queryKey: QueryKey) => void;
-  onRemoveQuery: (queryKey: QueryKey) => void;
-};
+export default function Sidebar() {
+  const {
+    selectedQuery: query,
+    refetchQuery,
+    invalidateQuery,
+    resetQuery,
+    removeQuery,
+  } = useStore();
 
-export default function Sidebar({
-  query,
-  onRefetchQuery,
-  onInvalidateQuery,
-  onResetQuery,
-  onRemoveQuery,
-}: Props) {
+  if (!query) {
+    return null;
+  }
+
   return (
     <DetailSidebar minWidth={300} width={350}>
       <Panel
@@ -75,7 +73,7 @@ export default function Sidebar({
             type="primary"
             disabled={query.state.isFetching}
             onClick={() => {
-              onRefetchQuery(query.queryKey);
+              refetchQuery(query.queryKey);
             }}
           >
             Refetch
@@ -83,7 +81,7 @@ export default function Sidebar({
           <Button
             size="small"
             onClick={() => {
-              onInvalidateQuery(query.queryKey);
+              invalidateQuery(query.queryKey);
             }}
           >
             Invalidate
@@ -91,7 +89,7 @@ export default function Sidebar({
           <Button
             size="small"
             onClick={() => {
-              onResetQuery(query.queryKey);
+              resetQuery(query.queryKey);
             }}
           >
             Reset
@@ -100,7 +98,7 @@ export default function Sidebar({
             size="small"
             danger={true}
             onClick={() => {
-              onRemoveQuery(query.queryKey);
+              removeQuery(query.queryKey);
             }}
           >
             Remove

@@ -1,7 +1,8 @@
 import { Tag } from "antd";
-import { TableRowSortOrder, Text } from "flipper";
+import { Text } from "flipper";
 import React, { useCallback, useMemo } from "react";
 import type { Query } from "react-query";
+import { useStore } from "./use-store";
 
 export function getQueryStatusLabel(query: Query) {
   return query.state.isFetching
@@ -48,7 +49,8 @@ export function getLastUpdatedAtString(query: Query) {
     : "–";
 }
 
-export function useQueryStatuses(queries: Query[]) {
+export function useQueryStatuses() {
+  const { queries } = useStore();
   const hasFresh = useMemo(
     () =>
       queries.filter((query) => getQueryStatusLabel(query) === "fresh").length,
@@ -167,10 +169,9 @@ export const defaultVisibleColumns = Object.values(queryTableColumns).reduce(
   {} as Record<string, boolean>
 );
 
-export function useSortedQueries(
-  queries: Query[],
-  sortOrder: TableRowSortOrder | undefined
-) {
+export function useSortedQueries() {
+  const { queries, sortOrder } = useStore();
+
   return useMemo(() => {
     if (!sortOrder) {
       return queries;

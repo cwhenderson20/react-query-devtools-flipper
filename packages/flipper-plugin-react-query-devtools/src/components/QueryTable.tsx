@@ -1,8 +1,8 @@
 import { DownOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Divider, Dropdown, Menu, Tag } from "antd";
-import { Layout, SearchableTable, TableRowSortOrder } from "flipper";
+import { Layout, SearchableTable } from "flipper";
 import React from "react";
-import type { Query } from "react-query";
+import { useStore } from "../use-store";
 import {
   queryStatusColors,
   queryTableColumns,
@@ -11,30 +11,20 @@ import {
   useSortedQueries,
 } from "../utils";
 
-type Props = {
-  queries: Query[];
-  sortOrder: TableRowSortOrder | undefined;
-  columnVisibility: Record<string, boolean>;
-  onSelectRow: (queryHash: string | null) => void;
-  setSortOrder: (order: TableRowSortOrder) => void;
-  toggleColumnVisibility: (id: string) => void;
-};
+export default function QueryTable() {
+  const {
+    columnVisibility,
+    setSortOrder,
+    setSelectedQueryHash,
+    toggleColumnVisibility,
+  } = useStore();
 
-export default function QueryTable({
-  queries,
-  sortOrder,
-  columnVisibility,
-  onSelectRow,
-  setSortOrder,
-  toggleColumnVisibility,
-}: Props) {
   function onRowHighlighted(rowArray: string[]) {
-    onSelectRow(rowArray.length === 1 ? rowArray[0] : null);
+    setSelectedQueryHash(rowArray.length === 1 ? rowArray[0] : null);
   }
 
-  const sortedQueries = useSortedQueries(queries, sortOrder);
-  const { hasFetching, hasFresh, hasInactive, hasStale } =
-    useQueryStatuses(queries);
+  const sortedQueries = useSortedQueries();
+  const { hasFetching, hasFresh, hasInactive, hasStale } = useQueryStatuses();
   const { columns, columnOrder, columnSizes, buildRow } =
     useColumns(columnVisibility);
 
