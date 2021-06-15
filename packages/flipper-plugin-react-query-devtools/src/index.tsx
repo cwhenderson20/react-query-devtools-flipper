@@ -4,13 +4,15 @@ import {
   createState,
   Layout,
   PluginClient,
+  useLocalStorageState,
   usePlugin,
   useValue,
 } from "flipper-plugin";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import type { Query, QueryKey } from "react-query";
 import QueryTable from "./components/QueryTable";
 import Sidebar from "./components/Sidebar";
+import { defaultVisibleColumns } from "./utils";
 
 type Events = {
   queries: { queries: string };
@@ -101,6 +103,20 @@ export function Component() {
       }),
     [selectedQueryHash, queries]
   );
+  // const columnVisibility = useValue(instance.columnVisibility);
+  const [columnVisibility, setColumnVisibility] = useLocalStorageState<
+    Record<string, boolean>
+  >("columnVisibility", defaultVisibleColumns);
+
+  const toggleColumnVisibility = useCallback(
+    (id: string) => {
+      setColumnVisibility({
+        ...columnVisibility,
+        [id]: !columnVisibility[id],
+      });
+    },
+    [columnVisibility]
+  );
 
   return (
     <Layout.Horizontal grow gap pad>
@@ -109,6 +125,8 @@ export function Component() {
         onSelectRow={instance.setSelectedQueryHash}
         sortOrder={sortOrder}
         setSortOrder={instance.setSortOrder}
+        columnVisibility={columnVisibility}
+        toggleColumnVisibility={toggleColumnVisibility}
       />
       {selectedQuery && (
         <Sidebar

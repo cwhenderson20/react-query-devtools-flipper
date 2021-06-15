@@ -1,14 +1,11 @@
-import { Checkbox, Dropdown, Button, Menu, Tag, Divider } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Layout, SearchableTable, TableRowSortOrder, Text } from "flipper";
-import React, { useMemo, useRef, useState } from "react";
+import { Button, Checkbox, Divider, Dropdown, Menu, Tag } from "antd";
+import { Layout, SearchableTable, TableRowSortOrder } from "flipper";
+import React from "react";
 import type { Query } from "react-query";
 import {
-  getLastUpdatedAtString,
-  getObserversCount,
-  getQueryStatusColor,
-  getQueryStatusLabel,
   queryStatusColors,
+  queryTableColumns,
   useColumns,
   useQueryStatuses,
   useSortedQueries,
@@ -16,88 +13,20 @@ import {
 
 type Props = {
   queries: Query[];
-  onSelectRow: (queryHash: string | null) => void;
   sortOrder: TableRowSortOrder | undefined;
+  columnVisibility: Record<string, boolean>;
+  onSelectRow: (queryHash: string | null) => void;
   setSortOrder: (order: TableRowSortOrder) => void;
+  toggleColumnVisibility: (id: string) => void;
 };
-
-const COLUMNS = {
-  lastUpdated: {
-    value: "Last Updated",
-    sortable: true,
-  },
-  queryHash: {
-    value: "Query Hash",
-    sortable: true,
-  },
-  observerCount: {
-    value: "Observer Count",
-    sortable: true,
-  },
-  status: {
-    value: "Status",
-    sortable: true,
-  },
-  updateCount: {
-    value: "Update Count",
-    sortable: true,
-  },
-  cacheTime: {
-    value: "Cache Time (ms)",
-    sortable: true,
-  },
-  staleTime: {
-    value: "Stale Time (ms)",
-    sortable: true,
-  },
-};
-
-const COLUMN_ORDER = [
-  { key: "lastUpdated", visible: true },
-  { key: "queryHash", visible: true },
-  { key: "observerCount", visible: true },
-  { key: "status", visible: true },
-  { key: "updateCount", visible: true },
-  { key: "cacheTime", visible: true },
-  { key: "staleTime", visible: true },
-];
-const COLUMN_SIZES = { lastUpdated: 150 };
-
-const menu = (
-  <Menu
-    onMouseDown={(e) => {
-      e.stopPropagation();
-    }}
-  >
-    <Menu.Item>
-      <Checkbox>Last Updated</Checkbox>
-    </Menu.Item>
-    <Menu.Item>
-      <Checkbox>Query Hash</Checkbox>
-    </Menu.Item>
-    <Menu.Item>
-      <Checkbox>Observers</Checkbox>
-    </Menu.Item>
-    <Menu.Item>
-      <Checkbox>Status</Checkbox>
-    </Menu.Item>
-    <Menu.Item>
-      <Checkbox>Update Count</Checkbox>
-    </Menu.Item>
-    <Menu.Item>
-      <Checkbox>Cache Time</Checkbox>
-    </Menu.Item>
-    <Menu.Item>
-      <Checkbox>Stale Time</Checkbox>
-    </Menu.Item>
-  </Menu>
-);
 
 export default function QueryTable({
   queries,
   sortOrder,
+  columnVisibility,
   onSelectRow,
   setSortOrder,
+  toggleColumnVisibility,
 }: Props) {
   function onRowHighlighted(rowArray: string[]) {
     onSelectRow(rowArray.length === 1 ? rowArray[0] : null);
@@ -106,7 +35,33 @@ export default function QueryTable({
   const sortedQueries = useSortedQueries(queries, sortOrder);
   const { hasFetching, hasFresh, hasInactive, hasStale } =
     useQueryStatuses(queries);
-  const { columns, columnOrder, columnSizes, buildRow } = useColumns();
+  const { columns, columnOrder, columnSizes, buildRow } =
+    useColumns(columnVisibility);
+
+  const menu = (
+    <Menu
+      onMouseDown={(e) => {
+        e.stopPropagation();
+      }}
+    >
+      {Object.values(queryTableColumns).map((columnDef) => {
+        return (
+          <Menu.Item key={columnDef.id}>
+            <Checkbox
+              checked={columnVisibility[columnDef.id]}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                toggleColumnVisibility(columnDef.id);
+              }}
+            >
+              {columnDef.title}
+            </Checkbox>
+          </Menu.Item>
+        );
+      })}
+    </Menu>
+  );
 
   return (
     <Layout.Container grow gap>
