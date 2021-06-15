@@ -1,4 +1,5 @@
 import { parse } from "flatted";
+import { TableRowSortOrder } from "flipper";
 import {
   createState,
   Layout,
@@ -27,6 +28,9 @@ export function plugin(client: PluginClient<Events, Methods>) {
   const selectedQueryHash = createState<string | null>(null, {
     persist: "selectedQueryHash",
   });
+  const sortOrder = createState<TableRowSortOrder | undefined>(undefined, {
+    persist: "sortOrder",
+  });
 
   client.onMessage("queries", (data) => {
     queries.set(parse(data.queries));
@@ -34,6 +38,10 @@ export function plugin(client: PluginClient<Events, Methods>) {
 
   function setSelectedQueryHash(queryHash: string | null) {
     selectedQueryHash.set(queryHash);
+  }
+
+  function setSortOrder(order: TableRowSortOrder) {
+    sortOrder.set(order);
   }
 
   async function refetchQuery(queryKey: QueryKey) {
@@ -62,15 +70,17 @@ export function plugin(client: PluginClient<Events, Methods>) {
 
   async function removeQuery(queryKey: QueryKey) {
     try {
-      await client.send("removeQuery", queryKey)
+      await client.send("removeQuery", queryKey);
     } catch (error) {
-      console.error("Remove query failed", error)
+      console.error("Remove query failed", error);
     }
   }
 
   return {
     queries,
     selectedQueryHash,
+    sortOrder,
+    setSortOrder,
     setSelectedQueryHash,
     refetchQuery,
     invalidateQuery,
@@ -82,6 +92,7 @@ export function plugin(client: PluginClient<Events, Methods>) {
 export function Component() {
   const instance = usePlugin(plugin);
   const queries = useValue(instance.queries);
+  const sortOrder = useValue(instance.sortOrder);
   const selectedQueryHash = useValue(instance.selectedQueryHash);
   const selectedQuery = useMemo(
     () =>
@@ -96,6 +107,8 @@ export function Component() {
       <QueryTable
         queries={queries}
         onSelectRow={instance.setSelectedQueryHash}
+        sortOrder={sortOrder}
+        setSortOrder={instance.setSortOrder}
       />
       {selectedQuery && (
         <Sidebar
