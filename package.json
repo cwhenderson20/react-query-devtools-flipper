@@ -1,7 +1,10 @@
 {
-  "name": "root",
+  "name": "react-query-devtools-flipper-monorepo",
   "private": true,
+  "author": "Chris Henderson <cwhenderson20@gmail.com> (https://github.com/cwhenderson20)",
+  "license": "MIT",
   "devDependencies": {
     "lerna": "^4.0.0"
-  }
+  },
+  "repository": "https://github.com/cwhenderson20/react-query-devtools-flipper"
 }
