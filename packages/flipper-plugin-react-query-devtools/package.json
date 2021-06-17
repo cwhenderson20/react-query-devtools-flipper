@@ -2,7 +2,7 @@
   "$schema": "https://fbflipper.com/schemas/plugin-package/v2.json",
   "name": "flipper-plugin-react-query-devtools",
   "id": "react-query-devtools-flipper",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "author": "Chris Henderson <cwhenderson20@gmail.com> (https://github.com/cwhenderson20)",
   "description": "Flipper desktop plugin for React Query",
   "pluginType": "client",
